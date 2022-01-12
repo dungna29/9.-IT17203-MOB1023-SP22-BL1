@@ -17,7 +17,7 @@ public interface IStudentService {
   */
   public String add();
   public String update();
-  public String delte();
+  public String delete();
   public String find();
   public void inDs();
 }
