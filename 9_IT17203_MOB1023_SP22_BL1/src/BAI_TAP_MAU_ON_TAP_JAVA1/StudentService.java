@@ -99,8 +99,19 @@ public class StudentService implements IStudentService {
 
   @Override
   public void inDs() {
+
     for (Student x : _lstStudents) {
       x.inRaManHinh();
+    }
+  }
+
+  public void timKiemGanDung() {
+    System.out.println("Mời bạn nhập tên hoặc mã: ");
+    var temp = _sc.nextLine();
+    for (Student x : _lstStudents) {
+      if (x.getTen().contains(temp)||x.getMsv().contains(temp)) {
+        x.inRaManHinh();
+      }
     }
   }
 
