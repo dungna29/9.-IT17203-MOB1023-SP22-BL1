@@ -1,0 +1,103 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package BAI_TAP_MAU_CRUD_SINHVIEN;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+/**
+ *
+ * @author Dungna89
+ */
+//Nơi triển khai CRUD đối tượng
+public class StudentService implements IStudentService {
+
+  Scanner _sc = new Scanner(System.in);
+  String _input;
+  List<Student> _lstStudents;
+  Student _student;
+  Utilities _Utilities;
+
+  public StudentService() {
+    _lstStudents = new ArrayList<Student>();
+    _Utilities = new Utilities();
+
+  }
+
+  public void fakeData() {
+    _lstStudents.add(new Student("DungnaPh01", "C#", 1, "Nguyễn Anh Dũng", "0123456", 0));
+    _lstStudents.add(new Student("HoangnaPh02", "C#", 2, "Nguyễn Anh Hoàng", "0123456", 1));
+    _lstStudents.add(new Student("DungnaPh03", "Java", 3, "Nguyễn Anh Dũng", "0123456", 1));
+  }
+
+  @Override
+  public String add(Student st) {
+    _lstStudents.add(st);
+    return "Thêm thành công";
+  }
+
+  @Override
+  public String update(Student st) {
+    int temp = getIndexByID(st.getId());
+    if (temp == -1) {
+      return "Không tìm thấy";
+    }
+    _lstStudents.get(temp).setTen(st.getTen());
+    _lstStudents.get(temp).setSdt(st.getSdt());
+    _lstStudents.get(temp).setNganhHoc(st.getNganhHoc());
+    return "Sửa thành công";
+  }
+
+  @Override
+  public String delete(int id) {
+    int temp = getIndexByID(id);
+    if (temp == -1) {
+      return "Không tìm thấy";
+    }
+    _lstStudents.remove(temp);
+    return "Xóa thành công";
+  }
+
+  @Override
+  public List<Student> findST(String text) {//Tìm kiếm gần đúng theo tên hoặc msv
+    var lstTemp = new ArrayList<Student>();
+    for (Student x : _lstStudents) {
+      if (x.getTen().contains(text) || x.getMsv().contains(text)) {
+        lstTemp.add(x);
+      }
+    }
+    return lstTemp;
+  }
+
+  @Override
+  public List<Student> getLstStudent() {
+    return _lstStudents;
+  }
+
+  private int getIndexByID(int ID) {
+    for (int i = 0; i < _lstStudents.size(); i++) {
+      if (ID == _lstStudents.get(i).getId()) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  public int getMaxID() {//Tìm ra khóa chính có số lớn nhất là
+    if (_lstStudents.isEmpty()) {
+      return 1;
+    }
+    int max = _lstStudents.get(0).getId();
+    for (int i = 1; i < _lstStudents.size(); i++) {
+      if (max < _lstStudents.get(i).getId()) {
+        max = _lstStudents.get(i).getId();
+      }
+    }
+    return max + 1;
+  }
+
+}
