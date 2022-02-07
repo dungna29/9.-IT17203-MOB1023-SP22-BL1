@@ -41,13 +41,14 @@ public class StudentService implements IStudentService {
   }
 
   @Override
-  public String update(Student st) {
+  public String update(Student st) {    
     int temp = getIndexByID(st.getId());
     if (temp == -1) {
       return "Không tìm thấy";
     }
     _lstStudents.get(temp).setTen(st.getTen());
     _lstStudents.get(temp).setSdt(st.getSdt());
+    _lstStudents.get(temp).setMsv(st.getMsv());
     _lstStudents.get(temp).setNganhHoc(st.getNganhHoc());
     return "Sửa thành công";
   }
@@ -65,8 +66,9 @@ public class StudentService implements IStudentService {
   @Override
   public List<Student> findST(String text) {//Tìm kiếm gần đúng theo tên hoặc msv
     var lstTemp = new ArrayList<Student>();
-    for (Student x : _lstStudents) {
-      if (x.getTen().contains(text) || x.getMsv().contains(text)) {
+    for (Student x : _lstStudents) {   
+      System.out.println(x.getMsv().toLowerCase().contains(text.toLowerCase()));
+      if (x.getTen().toLowerCase().contains(text.toLowerCase()) || x.getMsv().toLowerCase().startsWith(text.toLowerCase())) {
         lstTemp.add(x);
       }
     }
@@ -88,7 +90,7 @@ public class StudentService implements IStudentService {
   }
 
   public int getMaxID() {//Tìm ra khóa chính có số lớn nhất là
-    if (_lstStudents.isEmpty()) {
+    if (_lstStudents.isEmpty()) {//Nếu danh sách rỗng sẽ trả ra id = 1 là id mặc định
       return 1;
     }
     int max = _lstStudents.get(0).getId();

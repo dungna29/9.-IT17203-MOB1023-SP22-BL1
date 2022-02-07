@@ -5,6 +5,8 @@
  */
 package BAI_TAP_MAU_CRUD_SINHVIEN;
 
+import java.util.List;
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -14,14 +16,35 @@ import javax.swing.table.DefaultTableModel;
  * @author Dungna89
  */
 public class Main_GUI extends javax.swing.JFrame {
+  
   IStudentService _iStudentService;
   DefaultTableModel _defaultTableModel;
- 
+  Utilities _Utilities;
+  
   public Main_GUI() {
     initComponents();
-    _iStudentService = new StudentService();   
+    _Utilities = new Utilities();
+    _iStudentService = new StudentService();
     cbcGioiTinh();
+    txt_Id.setEnabled(false);//Làm mờ ô và không cho người dùng can thiệp
+    txt_msv.setEnabled(false);
+    getNewID();
+    nhomNganh();
   }
+  
+  void nhomNganh() {
+    ButtonGroup bg = new ButtonGroup();
+    bg.add(rdb_Mob);
+    bg.add(rdb_udpm);
+    bg.add(rdb_web);
+    rdb_udpm.setSelected(true);
+  }
+
+  //Code 1 phương thức lấy được khóa chính lớn nhất
+  void getNewID() {
+    txt_Id.setText(String.valueOf(_iStudentService.getMaxID()));//Lấy được khóa mới gán vào ô text id mặc định
+  }
+  
   void cbcGioiTinh() {
     DefaultComboBoxModel dcbb = new DefaultComboBoxModel();
     dcbb.addElement("Nam");
@@ -29,12 +52,14 @@ public class Main_GUI extends javax.swing.JFrame {
     dcbb.addElement("Không xác định");
     cbc_sex.setModel(dcbb);
   }
-  Student getDataStudent(){
-    return new Student(txt_msv.getText(), (rdb_Mob.isSelected()?"MOB":rdb_udpm.isSelected()?"UDPM":"WEB"),
-            _iStudentService.getMaxID(), txt_ten.getText(), txt_sdt.getText(),
-            cbc_sex.getSelectedItem().toString().equals("Nam")?1:0);
+  
+  Student getDataStudent() {//Phương thức này trả ra 1 đối tượng đã bao gồm data trên form
+    return new Student(txt_msv.getText(), (rdb_Mob.isSelected() ? "MOB" : rdb_udpm.isSelected() ? "UDPM" : "WEB"),
+           Integer.parseInt(txt_Id.getText()), txt_ten.getText(), txt_sdt.getText(),
+            cbc_sex.getSelectedItem().toString().equals("Nam") ? 1 : 0);
   }
-  void loadTable(){
+  
+  void loadTable(List<Student> lstData) {//Biến cái loadtable linh động trong bài toán
     if (_iStudentService.getLstStudent().isEmpty()) {
       JOptionPane.showMessageDialog(this, "Không có dữ liệu");
       return;
@@ -42,10 +67,11 @@ public class Main_GUI extends javax.swing.JFrame {
     _defaultTableModel = (DefaultTableModel) tbl_sinhvien.getModel();
     _defaultTableModel.setRowCount(0);//Loại bỏ 4 dòng trắng
     int stt = 1;
-    for (Student x : _iStudentService.getLstStudent()) {
-      _defaultTableModel.addRow(new Object[]{stt++,x.getId(),x.getTen(),x.getSdt(),x.getMsv(),
-        x.getNganhHoc(),x.getGioiTinh() == 1?"Nam":"Nữ"});
-    }    
+    for (Student x : lstData) {//Thay ở đây
+      _defaultTableModel.addRow(new Object[]{stt++, x.getId(), x.getTen(), x.getSdt(), x.getMsv(),
+        x.getNganhHoc(), x.getGioiTinh() == 1 ? "Nam" : "Nữ"});
+    }
+    getNewID();//Mỗi lần load lại data sẽ load lên mã mới cho text box ID
   }
 
   /**
@@ -80,7 +106,7 @@ public class Main_GUI extends javax.swing.JFrame {
     btn_fakeData = new javax.swing.JButton();
     btn_sua = new javax.swing.JButton();
     btn_them = new javax.swing.JButton();
-    btn_tim = new javax.swing.JButton();
+    btn_clear = new javax.swing.JButton();
     jScrollPane1 = new javax.swing.JScrollPane();
     tbl_sinhvien = new javax.swing.JTable();
     txt_timkiem = new javax.swing.JTextField();
@@ -115,6 +141,11 @@ public class Main_GUI extends javax.swing.JFrame {
 
     btn_xoa.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
     btn_xoa.setText("Xóa");
+    btn_xoa.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btn_xoaActionPerformed(evt);
+      }
+    });
 
     jLabel2.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
     jLabel2.setText("Quản lý sinh viên FPOLY SP22");
@@ -126,6 +157,16 @@ public class Main_GUI extends javax.swing.JFrame {
     jLabel4.setText("Sđt:");
 
     txt_ten.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+    txt_ten.addCaretListener(new javax.swing.event.CaretListener() {
+      public void caretUpdate(javax.swing.event.CaretEvent evt) {
+        txt_tenCaretUpdate(evt);
+      }
+    });
+    txt_ten.addMouseListener(new java.awt.event.MouseAdapter() {
+      public void mouseExited(java.awt.event.MouseEvent evt) {
+        txt_tenMouseExited(evt);
+      }
+    });
 
     txt_sdt.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
 
@@ -156,6 +197,11 @@ public class Main_GUI extends javax.swing.JFrame {
 
     btn_sua.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
     btn_sua.setText("Sửa");
+    btn_sua.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btn_suaActionPerformed(evt);
+      }
+    });
 
     btn_them.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
     btn_them.setText("Thêm");
@@ -165,8 +211,13 @@ public class Main_GUI extends javax.swing.JFrame {
       }
     });
 
-    btn_tim.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
-    btn_tim.setText("Tìm");
+    btn_clear.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+    btn_clear.setText("Clear");
+    btn_clear.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btn_clearActionPerformed(evt);
+      }
+    });
 
     tbl_sinhvien.setModel(new javax.swing.table.DefaultTableModel(
       new Object [][] {
@@ -179,9 +230,19 @@ public class Main_GUI extends javax.swing.JFrame {
         "STT", "ID", "TÊN", "SĐT", "MSV", "NGÀNH HỌC", "SEX"
       }
     ));
+    tbl_sinhvien.addMouseListener(new java.awt.event.MouseAdapter() {
+      public void mouseClicked(java.awt.event.MouseEvent evt) {
+        tbl_sinhvienMouseClicked(evt);
+      }
+    });
     jScrollPane1.setViewportView(tbl_sinhvien);
 
     txt_timkiem.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+    txt_timkiem.addCaretListener(new javax.swing.event.CaretListener() {
+      public void caretUpdate(javax.swing.event.CaretEvent evt) {
+        txt_timkiemCaretUpdate(evt);
+      }
+    });
 
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
     getContentPane().setLayout(layout);
@@ -200,15 +261,16 @@ public class Main_GUI extends javax.swing.JFrame {
                       .addComponent(jLabel1)
                       .addComponent(jLabel4))
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                      .addComponent(txt_sdt)
-                      .addComponent(txt_ten)
-                      .addComponent(txt_Id, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                      .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(txt_sdt)
+                        .addComponent(txt_Id, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE))
+                      .addComponent(txt_ten, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)))
                   .addGroup(layout.createSequentialGroup()
                     .addComponent(btn_fakeData)
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                     .addComponent(btn_them)))
-                .addGap(6, 6, 6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                   .addGroup(layout.createSequentialGroup()
                     .addComponent(btn_sua)
@@ -234,7 +296,7 @@ public class Main_GUI extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(rdb_web))))))
               .addGroup(layout.createSequentialGroup()
-                .addComponent(btn_tim)
+                .addComponent(btn_clear)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txt_timkiem, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE))
               .addGroup(layout.createSequentialGroup()
@@ -249,7 +311,7 @@ public class Main_GUI extends javax.swing.JFrame {
           .addGroup(layout.createSequentialGroup()
             .addGap(244, 244, 244)
             .addComponent(jLabel2)))
-        .addContainerGap(57, Short.MAX_VALUE))
+        .addContainerGap(37, Short.MAX_VALUE))
     );
     layout.setVerticalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -284,7 +346,7 @@ public class Main_GUI extends javax.swing.JFrame {
           .addComponent(btn_xoa))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-          .addComponent(btn_tim)
+          .addComponent(btn_clear)
           .addComponent(txt_timkiem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -307,13 +369,75 @@ public class Main_GUI extends javax.swing.JFrame {
 
   private void btn_fakeDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_fakeDataActionPerformed
     _iStudentService.fakeData();
-    loadTable();
+    loadTable(_iStudentService.getLstStudent());
+    btn_fakeData.setEnabled(false);//Khi fake data vào sẽ ẩn nút
   }//GEN-LAST:event_btn_fakeDataActionPerformed
 
   private void btn_themActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_themActionPerformed
-    _iStudentService.add(getDataStudent());
-    loadTable();
+    JOptionPane.showMessageDialog(this, _iStudentService.add(getDataStudent()));
+    loadTable(_iStudentService.getLstStudent());
   }//GEN-LAST:event_btn_themActionPerformed
+
+  private void btn_clearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_clearActionPerformed
+    txt_Id.setText(String.valueOf(_iStudentService.getMaxID()));
+    txt_ten.setText("");
+    txt_sdt.setText("");
+    txt_msv.setText("");    
+    rdb_udpm.setSelected(true);    
+    cbc_sex.setSelectedIndex(0);
+    //Sau khi click vào table thì nút thêm phải bị ẩn đi
+    btn_them.setEnabled(true);
+  }//GEN-LAST:event_btn_clearActionPerformed
+
+  private void txt_tenCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_txt_tenCaretUpdate
+    if (txt_ten.getText().isBlank()) {
+      txt_msv.setText("");//Nếu mà ô tên bị xóa trắng thì sẽ set lại trắng msv
+      return;
+    }
+    txt_msv.setText(_Utilities.zenMA(txt_ten.getText(), Integer.parseInt(txt_Id.getText())));
+  }//GEN-LAST:event_txt_tenCaretUpdate
+
+  private void txt_tenMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txt_tenMouseExited
+    if (txt_ten.getText().isBlank()) {
+      txt_msv.setText("");//Nếu mà ô tên bị xóa trắng thì sẽ set lại trắng msv
+      return;
+    }
+    txt_ten.setText(_Utilities.convertFullName(txt_ten.getText()));
+  }//GEN-LAST:event_txt_tenMouseExited
+
+  private void txt_timkiemCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_txt_timkiemCaretUpdate
+    if (txt_timkiem.getText().isBlank()) {
+      loadTable(_iStudentService.getLstStudent());//nếu ô tìm kiếm bị người dùng xóa trắng thì sẽ load lại data cũ
+      return;
+    }
+    loadTable(_iStudentService.findST(txt_timkiem.getText()));
+  }//GEN-LAST:event_txt_timkiemCaretUpdate
+
+  private void btn_xoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_xoaActionPerformed
+    JOptionPane.showMessageDialog(this, _iStudentService.delete(Integer.parseInt(txt_Id.getText())));
+    loadTable(_iStudentService.getLstStudent());
+  }//GEN-LAST:event_btn_xoaActionPerformed
+
+  private void tbl_sinhvienMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl_sinhvienMouseClicked
+    int index = tbl_sinhvien.getSelectedRow();
+    //Sau khi biết người dùng bấm vào dòng nào thì lấy index
+    Student st = _iStudentService.getLstStudent().get(index);
+    txt_Id.setText(String.valueOf(st.getId()));
+    txt_ten.setText(st.getTen());
+    txt_sdt.setText(st.getSdt());
+    txt_msv.setText(st.getMsv());
+    rdb_Mob.setSelected(st.getNganhHoc().equals("MOB") ? true : false);
+    rdb_udpm.setSelected(st.getNganhHoc().equals("UDPM") ? true : false);
+    rdb_web.setSelected(st.getNganhHoc().equals("WEB") ? true : false);
+    cbc_sex.setSelectedItem(st.getGioiTinh() == 1 ? "Nam" : st.getGioiTinh() == 0 ? "Nữ" : "Không xác định");
+    //Sau khi click vào table thì nút thêm phải bị ẩn đi
+    btn_them.setEnabled(false);
+  }//GEN-LAST:event_tbl_sinhvienMouseClicked
+
+  private void btn_suaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_suaActionPerformed
+    JOptionPane.showMessageDialog(this, _iStudentService.update(getDataStudent()));
+    loadTable(_iStudentService.getLstStudent());
+  }//GEN-LAST:event_btn_suaActionPerformed
 
   /**
    * @param args the command line arguments
@@ -351,10 +475,10 @@ public class Main_GUI extends javax.swing.JFrame {
   }
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
+  private javax.swing.JButton btn_clear;
   private javax.swing.JButton btn_fakeData;
   private javax.swing.JButton btn_sua;
   private javax.swing.JButton btn_them;
-  private javax.swing.JButton btn_tim;
   private javax.swing.JButton btn_xoa;
   private javax.swing.JComboBox<String> cbc_sex;
   private javax.swing.JLabel jLabel1;
