@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package BAI_TAP_MAU_CRUD_SINHVIEN;
+package BAI_TAP_MAU_CRUD_SINHVIEN_DOCGIFILE;
 
 import java.util.List;
 
@@ -29,4 +29,9 @@ public interface IStudentService {
   public List<Student> getLstStudent();
   public void fakeData();
   public int getMaxID();
+  
+  
+  //Thêm chức năng lưu file đọc file ở Interface
+  public String docFile();
+  public String ghiFile();
 }

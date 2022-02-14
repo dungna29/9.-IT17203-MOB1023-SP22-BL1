@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package BAI_TAP_MAU_CRUD_SINHVIEN;
+package BAI_TAP_MAU_CRUD_SINHVIEN_DOCGIFILE;
 
 import java.util.List;
 import javax.swing.ButtonGroup;
@@ -110,6 +110,8 @@ public class Main_GUI extends javax.swing.JFrame {
     jScrollPane1 = new javax.swing.JScrollPane();
     tbl_sinhvien = new javax.swing.JTable();
     txt_timkiem = new javax.swing.JTextField();
+    btn_DocFile = new javax.swing.JButton();
+    btn_ghiFile = new javax.swing.JButton();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -244,6 +246,22 @@ public class Main_GUI extends javax.swing.JFrame {
       }
     });
 
+    btn_DocFile.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+    btn_DocFile.setText("Đọc File");
+    btn_DocFile.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btn_DocFileActionPerformed(evt);
+      }
+    });
+
+    btn_ghiFile.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+    btn_ghiFile.setText("Ghi File");
+    btn_ghiFile.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btn_ghiFileActionPerformed(evt);
+      }
+    });
+
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
     getContentPane().setLayout(layout);
     layout.setHorizontalGroup(
@@ -273,11 +291,6 @@ public class Main_GUI extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                   .addGroup(layout.createSequentialGroup()
-                    .addComponent(btn_sua)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(btn_xoa)
-                    .addGap(271, 271, 271))
-                  .addGroup(layout.createSequentialGroup()
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                       .addComponent(jLabel6)
                       .addComponent(jLabel7)
@@ -294,7 +307,16 @@ public class Main_GUI extends javax.swing.JFrame {
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(rdb_udpm)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(rdb_web))))))
+                        .addComponent(rdb_web))))
+                  .addGroup(layout.createSequentialGroup()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                      .addComponent(btn_DocFile)
+                      .addComponent(btn_sua))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                      .addComponent(btn_xoa)
+                      .addComponent(btn_ghiFile))
+                    .addGap(205, 205, 205))))
               .addGroup(layout.createSequentialGroup()
                 .addComponent(btn_clear)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -311,7 +333,7 @@ public class Main_GUI extends javax.swing.JFrame {
           .addGroup(layout.createSequentialGroup()
             .addGap(244, 244, 244)
             .addComponent(jLabel2)))
-        .addContainerGap(37, Short.MAX_VALUE))
+        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
     );
     layout.setVerticalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -347,8 +369,10 @@ public class Main_GUI extends javax.swing.JFrame {
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(btn_clear)
-          .addComponent(txt_timkiem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+          .addComponent(txt_timkiem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addComponent(btn_DocFile)
+          .addComponent(btn_ghiFile))
+        .addGap(15, 15, 15)
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
           .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE)
           .addGroup(layout.createSequentialGroup()
@@ -439,6 +463,16 @@ public class Main_GUI extends javax.swing.JFrame {
     loadTable(_iStudentService.getLstStudent());
   }//GEN-LAST:event_btn_suaActionPerformed
 
+  private void btn_DocFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_DocFileActionPerformed
+    JOptionPane.showMessageDialog(this, _iStudentService.docFile());
+    loadTable(_iStudentService.getLstStudent());
+  }//GEN-LAST:event_btn_DocFileActionPerformed
+
+  private void btn_ghiFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ghiFileActionPerformed
+    JOptionPane.showMessageDialog(this, _iStudentService.ghiFile());
+    loadTable(_iStudentService.getLstStudent());
+  }//GEN-LAST:event_btn_ghiFileActionPerformed
+
   /**
    * @param args the command line arguments
    */
@@ -475,8 +509,10 @@ public class Main_GUI extends javax.swing.JFrame {
   }
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
+  private javax.swing.JButton btn_DocFile;
   private javax.swing.JButton btn_clear;
   private javax.swing.JButton btn_fakeData;
+  private javax.swing.JButton btn_ghiFile;
   private javax.swing.JButton btn_sua;
   private javax.swing.JButton btn_them;
   private javax.swing.JButton btn_xoa;

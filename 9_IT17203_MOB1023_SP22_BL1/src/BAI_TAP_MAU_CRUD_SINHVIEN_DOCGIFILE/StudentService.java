@@ -3,8 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package BAI_TAP_MAU_CRUD_SINHVIEN;
+package BAI_TAP_MAU_CRUD_SINHVIEN_DOCGIFILE;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -41,7 +46,7 @@ public class StudentService implements IStudentService {
   }
 
   @Override
-  public String update(Student st) {    
+  public String update(Student st) {
     int temp = getIndexByID(st.getId());
     if (temp == -1) {
       return "Không tìm thấy";
@@ -66,7 +71,7 @@ public class StudentService implements IStudentService {
   @Override
   public List<Student> findST(String text) {//Tìm kiếm gần đúng theo tên hoặc msv
     var lstTemp = new ArrayList<Student>();
-    for (Student x : _lstStudents) {   
+    for (Student x : _lstStudents) {
       System.out.println(x.getMsv().toLowerCase().contains(text.toLowerCase()));
       if (x.getTen().toLowerCase().contains(text.toLowerCase()) || x.getMsv().toLowerCase().startsWith(text.toLowerCase())) {
         lstTemp.add(x);
@@ -100,6 +105,49 @@ public class StudentService implements IStudentService {
       }
     }
     return max + 1;
+  }
+
+  @Override
+  public String docFile() {
+    try {
+      File file = new File("dataObject.txt");
+      if (!file.exists()) {//Kiểm tra sự tồn tại của file
+        return "File không tìm thấy";
+      }
+      FileInputStream fis = new FileInputStream(file);
+      ObjectInputStream ois = new ObjectInputStream(fis);
+
+      while (fis.available() > 0) {
+        Student temp = (Student) ois.readObject();//Đọc 1 đối tượng lên gán cho biến temp
+        //(Student)ois.readObject() Ép kiểu từ object về đối tượng sinh viên
+        _lstStudents.add(temp);
+      }
+      ois.close();
+      fis.close();
+      return "Đọc thành công";
+    } catch (Exception e) {
+      return "Đọc thất bại";
+    }
+  }
+
+  @Override
+  public String ghiFile() {
+    try {
+      File file = new File("dataObject.txt");
+      if (!file.exists()) {//Kiểm tra sự tồn tại của file
+        file.createNewFile();//Tạo mới file
+      }
+      FileOutputStream fos = new FileOutputStream(file);
+      ObjectOutputStream oos = new ObjectOutputStream(fos);
+      for (Student x : _lstStudents) {
+        oos.writeObject(x);
+      }
+      oos.close();
+      fos.close();
+      return "Lưu thành công";
+    } catch (Exception e) {
+      return "Lưu file thất bại";
+    }
   }
 
 }

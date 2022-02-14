@@ -3,7 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package BAI_TAP_MAU_CRUD_SINHVIEN;
+package BAI_TAP_MAU_CRUD_SINHVIEN_DOCGIFILE;
+
+import java.io.Serializable;
 
 
 
@@ -11,7 +13,7 @@ package BAI_TAP_MAU_CRUD_SINHVIEN;
  *
  * @author Dungna89
  */
-public class Student extends Person{
+public class Student extends Person implements Serializable{
   private String msv;
   private String nganhHoc;
   
